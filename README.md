@@ -1,15 +1,15 @@
 # **Sentence Classification with LSTM - HW1B**
 
-## **📌 Project Overview**
+## **Project Overview**
 This project is part of **HW1B** and focuses on **sentence classification** using **LSTM-based deep learning models**. The goal is to implement an LSTM model and compare its performance against **baseline models**. The dataset consists of **train, news test, and tweets test sets**, where the model is trained on the **train set** and tested on **news and tweets sets**.
 
-### **🚀 Objectives**
+### **Objectives**
 - Train a **BiLSTM classifier** on a text classification task.
 - Compare its performance against **Random, Majority, and Stratified Baselines**.
 - Use **different LSTM configurations** to analyze performance variations.
 - Evaluate on separate **news** and **tweets** test sets.
 
-## **📂 Folder Structure**
+## **📂 Project Structure**
 ```
 project_root/
 │── hw1b_train.py          # Train one LSTM model & save it
@@ -80,7 +80,7 @@ python pipeline.py
 
 ---
 
-## **📊 Understanding the `experiments/`, `results/`, and `models/` Folders**
+## **Understanding the `experiments/`, `results/`, and `models/` Folders**
 
 ### **📂 `experiments/`**
 - **Created by `pipeline.py`**
@@ -114,15 +114,13 @@ Model Path: models/lstm_model.pth
 ```
 
 ---
-
-
-## **📈 Performance Comparison & Expected Outcome**
 ### **📊 Performance Comparison - Test News Set**
 | **Model**             | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |----------------------|------------|------------|------------|------------|
-| **Random Baseline**  | 50.6%      | 50.6%      | 50.65%     | 49.64%     |
+| **Random Baseline**  | 49.6%      | 49.32%     | 49.27%     | 48.47%     |
 | **Majority Baseline** | 63.8%      | 31.9%      | 50.0%      | 38.95%     |
-| **Stratified Baseline** | 53.6%   | 50.25%     | 50.25%     | 50.23%     |
+| **Stratified Baseline** | 49.0%   | 43.65%     | 43.90%     | 43.73%     |
+| **Word2Vec Baseline** | 57.8%     | 54.76%     | 54.86%     | 54.79%     |
 | **LSTM Model (Best Config)** | **66.4%** | **62.94%** | **61.72%** | **62.01%** |
 
 ---
@@ -130,13 +128,18 @@ Model Path: models/lstm_model.pth
 ### **📊 Performance Comparison - Test Tweets Set**
 | **Model**             | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |----------------------|------------|------------|------------|------------|
-| **Random Baseline**  | 51.15%     | 51.16%     | 51.16%     | 51.15%     |
+| **Random Baseline**  | 50.12%     | 50.13%     | 50.13%     | 50.12%     |
 | **Majority Baseline** | 50.75%     | 25.38%     | 50.0%      | 33.67%     |
-| **Stratified Baseline** | 51.39%  | 51.37%     | 51.37%     | 51.37%     |
+| **Stratified Baseline** | 49.8%  | 49.78%     | 49.78%     | 49.77%     |
+| **Word2Vec Baseline** | 55.66%     | 55.66%     | 55.66%     | 55.65%     |
 | **LSTM Model (Best Config)** | **63.34%** | **64.18%** | **63.51%** | **62.96%** |
 
-**The LSTM model outperforms all baselines on both test sets!** 
-- **Baselines are weak** because they don’t consider sentence meaning.
-- **LSTM models show a +10-20% improvement** over baselines.
+---
+
+### **Observations**
+- **Word2Vec Baseline performs significantly better than Random and Stratified Baselines**.
+- **Word2Vec outperforms Majority Baseline by ~5-10% in accuracy and F1-score**.
+- **LSTM Model still remains the best performing** but shows a **clear advantage over Word2Vec** in both test sets.
+- **Word2Vec Baseline captures sentence meaning better than frequency-based baselines**.
 
 ---

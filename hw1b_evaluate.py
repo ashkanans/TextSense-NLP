@@ -7,7 +7,9 @@ from torch.utils.data import DataLoader
 from src.data_loader import load_dataset
 from src.model import ParamLSTM, TextDataset, collate_fn
 from src.train import evaluate_model
-from src.baselines import random_baseline, majority_class_baseline, stratified_baseline, evaluate_baseline
+from src.baselines import random_baseline, majority_class_baseline, stratified_baseline, evaluate_baseline, \
+    word2vec_baseline
+
 
 def load_trained_model(model_path, vocab_size, embed_dim, hidden_dim, output_dim, num_layers, bidirectional, dropout, device="cpu"):
     """Load a trained LSTM model from a saved checkpoint."""
@@ -75,6 +77,7 @@ if __name__ == "__main__":
             "Random Baseline": random_baseline(test_data),
             "Majority Baseline": majority_class_baseline(test_data),
             "Stratified Baseline": stratified_baseline(test_data),
+            "Word2Vec Baseline": word2vec_baseline(train_data, test_data)
         }
 
         baseline_results[test_set_name] = {name: evaluate_baseline(preds, test_data) for name, preds in baselines.items()}

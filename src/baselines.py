@@ -1,7 +1,14 @@
 import random
 from collections import Counter
-from typing import List, Dict
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+import gensim
+import numpy as np
+from gensim.models import Word2Vec
+from sklearn.metrics.pairwise import cosine_similarity
+from typing import List, Dict
+
+from src.data_loader import load_dataset
 
 
 def random_baseline(dataset: List[Dict]) -> List[str]:
@@ -67,3 +74,40 @@ def compare_with_baselines(dataset: List[Dict], lstm_results: Dict[str, float]):
         f"\nLSTM Model{'':<13}{lstm_results['accuracy']:<10.4f}{lstm_results['precision']:<10.4f}{lstm_results['recall']:<10.4f}{lstm_results['f1_score']:<10.4f}")
 
     return baseline_results
+
+def train_word2vec(dataset: List[Dict], vector_size=100, window=5, min_count=1, epochs=10):
+    """Train a Word2Vec model on the dataset."""
+    sentences = [sample["text"].split() for sample in dataset]
+    model = Word2Vec(sentences, vector_size=vector_size, window=window, min_count=min_count, sg=1)
+    model.train(sentences, total_examples=len(sentences), epochs=epochs)
+    return model
+
+
+def get_sentence_embedding(model, sentence):
+    """Compute sentence embedding by averaging word vectors."""
+    words = sentence.split()
+    word_vectors = [model.wv[word] for word in words if word in model.wv]
+    if not word_vectors:
+        return np.zeros(model.vector_size)
+    return np.mean(word_vectors, axis=0)
+
+
+def word2vec_baseline(train_dataset: List[Dict], test_dataset: List[Dict]):
+    """Implements a Word2Vec-based baseline that assigns labels based on nearest sentence similarity."""
+
+    # Train Word2Vec model on train dataset
+    w2v_model = train_word2vec(train_dataset)
+
+    # Compute sentence embeddings for training examples
+    train_embeddings = np.array([get_sentence_embedding(w2v_model, sample["text"]) for sample in train_dataset])
+    train_labels = [sample["choices"][sample["label"]] for sample in train_dataset]
+
+    predictions = []
+
+    for sample in test_dataset:
+        test_embedding = get_sentence_embedding(w2v_model, sample["text"])
+        similarities = cosine_similarity([test_embedding], train_embeddings)[0]
+        closest_index = np.argmax(similarities)
+        predictions.append(train_labels[closest_index])
+
+    return predictions
