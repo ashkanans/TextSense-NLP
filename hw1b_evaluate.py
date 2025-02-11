@@ -31,7 +31,7 @@ def load_trained_model(model_path, vocab_size, embed_dim, hidden_dim, output_dim
     return model
 
 if __name__ == "__main__":
-    model_path = "models/lstm_model.pth"  # 📌 Set model path
+    model_path = "experiments/2025-02-09_22-33-02/model.pth"  # 📌 Set model path
     dataset = load_dataset("data/HASPEEDE")
 
     # 📌 Use the train set to build vocabulary
@@ -44,16 +44,17 @@ if __name__ == "__main__":
 
     # 📌 Load trained LSTM model
     model_config = {
-        "hidden_dim": 64,
-        "num_layers": 2,
-        "bidirectional": True,
-        "dropout": 0.3,
-        "embed_dim": 100,
-        "output_dim": 2
+            "hidden_dim": 64,
+            "num_layers": 5,
+            "bidirectional": True,
+            "dropout": 0.3,
+            "lr": 0.0005,
+            "epochs": 10
     }
+
     model = load_trained_model(
-        model_path, len(vocab), model_config["embed_dim"], model_config["hidden_dim"],
-        model_config["output_dim"], model_config["num_layers"], model_config["bidirectional"],
+        model_path, len(vocab), 300, model_config["hidden_dim"],
+        2, model_config["num_layers"], model_config["bidirectional"],
         model_config["dropout"]
     )
 

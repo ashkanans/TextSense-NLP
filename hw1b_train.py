@@ -24,23 +24,23 @@ if __name__ == "__main__":
     train_dataset = TextDataset(train_data, vocab, lambda x: x.split())
     val_dataset = TextDataset(val_data, vocab, lambda x: x.split())
 
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn)
 
-    # 📌 Model Configuration
+    # Model Configuration
     model_config = {
-        "hidden_dim": 64,
-        "num_layers": 2,
+        "hidden_dim": 256,
+        "num_layers": 5,
         "bidirectional": True,
         "dropout": 0.3,
         "lr": 0.0005,
-        "epochs": 5
+        "epochs": 10
     }
 
     # Initialize model
     model = ParamLSTM(
         vocab_size=len(vocab),
-        embed_dim=100,
+        embed_dim=300,
         hidden_dim=model_config["hidden_dim"],
         output_dim=2,
         num_layers=model_config["num_layers"],

@@ -109,7 +109,8 @@ Number of Layers: 2
 Bidirectional: True
 Dropout: 0.3
 Embedding Dimension: 100
-Output Classes: 2
+Learning rate: 0.0005
+Epochs: 15
 Model Path: models/lstm_model.pth
 ```
 

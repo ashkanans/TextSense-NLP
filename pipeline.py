@@ -26,10 +26,10 @@ if __name__ == "__main__":
     train_dataset = TextDataset(train_data, vocab, lambda x: x.split())
     val_dataset = TextDataset(val_data, vocab, lambda x: x.split())
 
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn)
 
-    # 📌 Step 1: Evaluate Baselines on Test Sets (News & Tweets)
+    # Step 1: Evaluate Baselines on Test Sets (News & Tweets)
     print("\nEvaluating Baselines on Test Sets (News & Tweets)...\n")
     baseline_results = {}
 
@@ -47,21 +47,29 @@ if __name__ == "__main__":
 
     print("✅ Baseline Evaluation Completed\n")
 
-    # 📌 Step 2: Define Model Configurations for Experiments
+    # Step 2: Define Model Configurations for Experiments
     model_configs = [
-        {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
-        {"hidden_dim": 32, "num_layers": 3, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
-        {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0004, "epochs": 15},
-        {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.2, "lr": 0.0005, "epochs": 15},
-        {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
-        {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0003, "epochs": 15},
-        {"hidden_dim": 64, "num_layers": 3, "bidirectional": True, "dropout": 0.25, "lr": 0.0005, "epochs": 15},
-        {"hidden_dim": 32, "num_layers": 3, "bidirectional": True, "dropout": 0.3, "lr": 0.0003, "epochs": 15},
-        {"hidden_dim": 64, "num_layers": 4, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 15},
-        {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.35, "lr": 0.0005, "epochs": 15},
+        {
+            "hidden_dim": 256,
+            "num_layers": 5,
+            "bidirectional": True,
+            "dropout": 0.3,
+            "lr": 0.0005,
+            "epochs": 10
+        },
+        # {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
+        # {"hidden_dim": 32, "num_layers": 3, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
+        # {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0004, "epochs": 15},
+        # {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.2, "lr": 0.0005, "epochs": 15},
+        # {"hidden_dim": 64, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 20},
+        # {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.3, "lr": 0.0003, "epochs": 15},
+        # {"hidden_dim": 64, "num_layers": 3, "bidirectional": True, "dropout": 0.25, "lr": 0.0005, "epochs": 15},
+        # {"hidden_dim": 32, "num_layers": 3, "bidirectional": True, "dropout": 0.3, "lr": 0.0003, "epochs": 15},
+        # {"hidden_dim": 64, "num_layers": 4, "bidirectional": True, "dropout": 0.3, "lr": 0.0005, "epochs": 15},
+        # {"hidden_dim": 32, "num_layers": 2, "bidirectional": True, "dropout": 0.35, "lr": 0.0005, "epochs": 15},
     ]
 
-    # 📌 Step 3: Train & Evaluate LSTM Models
+    # Step 3: Train & Evaluate LSTM Models
     for model_config in model_configs:
         # Create timestamped experiment directory
         experiment_dir = os.path.join("experiments", datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
@@ -70,7 +78,7 @@ if __name__ == "__main__":
         # Initialize model
         model = ParamLSTM(
             vocab_size=len(vocab),
-            embed_dim=100,
+            embed_dim=300,
             hidden_dim=model_config["hidden_dim"],
             output_dim=2,
             num_layers=model_config["num_layers"],
@@ -85,7 +93,7 @@ if __name__ == "__main__":
         model_path = os.path.join(experiment_dir, "model.pth")
         torch.save(model.state_dict(), model_path)
 
-        # 📌 Step 4: Evaluate LSTM Model on Test Sets
+        # Step 4: Evaluate LSTM Model on Test Sets
         for test_set_name in ["test-news-taskA.jsonl", "test-tweets-taskA.jsonl"]:
             test_data = dataset[test_set_name]
 
@@ -102,7 +110,7 @@ if __name__ == "__main__":
             model_config[f"{test_set_name}_recall"] = test_metrics[2]
             model_config[f"{test_set_name}_f1"] = test_metrics[3]
 
-        # 📌 Step 5: Save LSTM & Baseline Results into JSON File
+        # Step 5: Save LSTM & Baseline Results into JSON File
         results = {
             "model_config": model_config,
             "baseline_results": baseline_results
